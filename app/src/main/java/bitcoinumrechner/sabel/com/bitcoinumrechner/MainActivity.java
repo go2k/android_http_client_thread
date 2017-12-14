@@ -1,6 +1,7 @@
 package bitcoinumrechner.sabel.com.bitcoinumrechner;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -42,6 +43,7 @@ public class MainActivity extends Activity {
         bitcoinLock = false;
 
         //et_bitcoin.setEnabled(false);
+
         et_euro.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -125,10 +127,14 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
 
-                new Thread(new MeinKursThread()).start();
-                et_aktuellerkurs.setText(Double.toString(faktorBitcoinKursInEuro));
+                //new Thread(new MeinKursThread()).start();
+                //et_aktuellerkurs.setText(Double.toString(faktorBitcoinKursInEuro));
+
+                MyDownloadThread myDownloadThread = new MyDownloadThread();
+                myDownloadThread.execute();
             }
         });
+        new MyDownloadThread().execute();
 
     }
 
@@ -191,5 +197,39 @@ public class MainActivity extends Activity {
         }
     }
 
+    /**
+     * --------------------------------------------------------------------------------
+     */
+    public class MyDownloadThread extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            URLConnection urlConnection = null;
+            InputStream inputStream = null;
+            URL url;
+            try {
+                url = new URL("https://bitaps.com/api/ticker/average");
+                urlConnection = url.openConnection();
+                inputStream = urlConnection.getInputStream();
+                BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+                String jsonZeile = null;
+                String zeile = null;
+                while ((zeile = br.readLine()) != null) {
+                    jsonZeile = zeile;
+                }
+                JSONObject jsonObject = new JSONObject(jsonZeile);
+                JSONObject fxrates = jsonObject.getJSONObject("fx_rates");
+                faktorBitcoinKursInEuro = fxrates.getDouble("eur");
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
 
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            et_aktuellerkurs.setText(Double.toString(faktorBitcoinKursInEuro));
+        }
+    }
 }
