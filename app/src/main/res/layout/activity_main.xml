@@ -29,6 +29,19 @@
         android:hint="@string/et_bitcoin"
         android:inputType="numberDecimal" />
 
+    <Button
+        android:id="@+id/btn_kursaktualisieren"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/btn_aktualisieren" />
 
+    <EditText
+        android:id="@+id/et_aktuellerkurs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:hint="@string/et_aktuellerkurs"
+        android:inputType="numberDecimal" />
 
 </LinearLayout>

@@ -3,4 +3,6 @@
     <string name="et_euro">Euro eintragen</string>
     <string name="et_bitcoin">Betrag in Bitcoin</string>
     <string name="btn_umrechnen">Umrechnen</string>
+    <string name="btn_aktualisieren">Kurs Aktualisieren</string>
+    <string name="et_aktuellerkurs">aktueller Kurs</string>
 </resources>
