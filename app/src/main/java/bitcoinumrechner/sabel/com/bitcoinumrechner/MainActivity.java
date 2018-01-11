@@ -40,6 +40,7 @@ public class MainActivity extends Activity {
     // Schlüssel -> Wert
     // bitcoinkurs -> 11.215,66
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
