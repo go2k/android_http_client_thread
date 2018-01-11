@@ -36,12 +36,13 @@
         android:layout_gravity="center"
         android:text="@string/btn_aktualisieren" />
 
-    <EditText
+    <TextView
         android:id="@+id/et_aktuellerkurs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:hint="@string/et_aktuellerkurs"
         android:inputType="numberDecimal" />
+
 
 </LinearLayout>

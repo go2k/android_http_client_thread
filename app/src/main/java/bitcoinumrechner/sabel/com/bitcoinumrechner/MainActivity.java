@@ -1,6 +1,7 @@
 package bitcoinumrechner.sabel.com.bitcoinumrechner;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -8,6 +9,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,12 +24,21 @@ import java.net.URLConnection;
 
 public class MainActivity extends Activity {
 
-    private EditText et_euro, et_bitcoin, et_aktuellerkurs;
+    private EditText et_euro, et_bitcoin;
+    private TextView tv_aktuellerkurs;
     private Button btn_umrechnen;
     private Button btn_aktualisieren;
-    private double faktorBitcoinKursInEuro = 8919.0;
+    private double faktorBitcoinKursInEuro;
     private boolean euroLock;
     private boolean bitcoinLock;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
+
+    private static final String BITCOINKURS = "bitcoinkurs";
+
+    //SharedPreferences zum Soeichern und laden von Schlüssel Werte Paaren
+    // Schlüssel -> Wert
+    // bitcoinkurs -> 11.215,66
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +46,15 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         et_euro = findViewById(R.id.et_euro);
         et_bitcoin = findViewById(R.id.et_bitcoin);
-        et_aktuellerkurs = findViewById(R.id.et_aktuellerkurs);
+        tv_aktuellerkurs = findViewById(R.id.et_aktuellerkurs);
         btn_umrechnen = findViewById(R.id.btn_umrechnen);
         btn_aktualisieren = findViewById(R.id.btn_kursaktualisieren);
+
+
+        sharedPreferences = this.getPreferences(MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        faktorBitcoinKursInEuro = sharedPreferences.getFloat(BITCOINKURS, 0);
+        tv_aktuellerkurs.setText(Double.toString(faktorBitcoinKursInEuro));
 
         euroLock = false;
         bitcoinLock = false;
@@ -73,6 +90,7 @@ public class MainActivity extends Activity {
 
             }
         });
+
 
         et_bitcoin.addTextChangedListener(new TextWatcher() {
             @Override
@@ -134,7 +152,14 @@ public class MainActivity extends Activity {
                 myDownloadThread.execute();
             }
         });
-        new MyDownloadThread().execute();
+
+        // new MyDownloadThread().execute();
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
 
     }
 
@@ -229,7 +254,12 @@ public class MainActivity extends Activity {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            et_aktuellerkurs.setText(Double.toString(faktorBitcoinKursInEuro));
+
+            editor.putFloat(BITCOINKURS, (float) faktorBitcoinKursInEuro);
+            editor.commit();
+
+            tv_aktuellerkurs.setText(Double.toString(faktorBitcoinKursInEuro));
+
         }
     }
 }
